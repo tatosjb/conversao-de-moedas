@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  postgres:
+    image: 'postgres:9.5'
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+  website:
+    depends_on:
+      - 'postgres'
+    build:
+      context: .
+      args:
+        - user=${USER}
+    command: sh -c "(rails db:migrate && puma) || (bundle && rails db:migrate && puma) || (bundle && rails db:setup && rails db:migrate && puma)"
+    ports:
+      - '3000:3000'
+    volumes:
+      - '.:/app'
+
+volumes:
+  postgres:
