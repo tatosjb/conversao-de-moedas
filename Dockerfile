@@ -21,8 +21,10 @@ RUN sudo npm install --global yarn
 RUN gem install rails
 
 RUN sudo mkdir /app
-RUN sudo chown $user /app
+
 WORKDIR /app
+
+RUN sudo chown $user /app
 
 COPY . .
 RUN bundle install
