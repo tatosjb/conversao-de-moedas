@@ -1,7 +1,25 @@
 $(document).ready ->
+  listOfQueries = [{}]
+  listOfQueries = []
+
+  cancelAll = () ->
+    listOfQueries.forEach((element) -> element.abort())
+    listOfQueries = []
+
+
+  $('#currency').change ->
+    $('#exchange_form').submit()
+
+  $('#currency_destination').change ->
+    $('#exchange_form').submit()
+
+  $('#quantity').keyup ->
+    $('#exchange_form').submit()
+
   $('form').submit ->
     if $('form').attr('action') == '/exchange'
-      $.ajax '/exchange',
+      cancelAll();
+      query = $.ajax '/exchange',
         type: 'POST'
         dataType: 'json'
         data: {
@@ -9,9 +27,8 @@ $(document).ready ->
           currency_destination: $("#currency_destination").val(),
           quantity: $("#quantity").val()
         }
-        error: (jqXHR, textStatus, errorThrown) ->
-          $('#result').val(errorThrown  )
-          alert textStatus
         success: (data, text, jqXHR) ->
           $('#result').val(data.value)
+
+      listOfQueries.push(query)
       return false;
